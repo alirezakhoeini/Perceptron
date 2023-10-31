@@ -7,7 +7,7 @@ import numpy as np
 train_data = pd.read_csv("train.csv")
 
 # Randomly select 50 data points as validation data
-validation_data = train_data.sample(n=50, random_state=42)  # You can change the random_state for reproducibility
+validation_data = train_data.sample(n=50, random_state=42)
 
 # Remove the selected validation data from the training data
 train_data = train_data.drop(validation_data.index)
@@ -20,6 +20,21 @@ validation_data.to_csv("validation.csv", index=False)
 # Load the modified training data and validation data
 train_data = pd.read_csv("modified_train.csv")
 validation_data = pd.read_csv("validation.csv")
+class_unNormal_0 = train_data[train_data['labels'] == 0]
+class_unNormal_1 = train_data[train_data['labels'] == 1]
+plt.figure(figsize=(10, 5))
+
+# Plot data points for class 0 in blue
+plt.scatter(class_unNormal_0['x1'], class_unNormal_0['x2'], c='blue', label='Class 0', marker='o')
+
+# Plot data points for class 1 in red
+plt.scatter(class_unNormal_1['x1'], class_unNormal_1['x2'], c='red', label='Class 1', marker='x')
+
+# Add labels and legend
+plt.xlabel('x1')
+plt.ylabel('x2')
+plt.title('Scatter Plot of pure Data')
+plt.legend()
 
 # Define a function for Min-Max scaling
 def min_max_scaling(data):
@@ -55,6 +70,7 @@ plt.xlabel('x1')
 plt.ylabel('x2')
 plt.title('Scatter Plot of Normalized Data')
 plt.legend()
+
 
 # # Show the plots
 # plt.show()
