@@ -14,7 +14,7 @@ y_train = train_data['labels'].values
 X_val = validation_data[['x1', 'x2']].values
 y_val = validation_data['labels'].values
 
-test_data = pd.read_csv("test.csv")
+test_data = pd.read_csv("normalized_test.csv")
 X_test = test_data[['x1', 'x2']].values
 
 # Define a function to train a perceptron model with polynomial features and return accuracy
@@ -37,10 +37,26 @@ degrees = [2, 3, 5, 10]
 # Train perceptron models with different degrees and report accuracies
 for degree in degrees:
     train_accuracy, val_accuracy = train_perceptron_with_poly_features(degree)
-    print(f"Degree {degree} - Training Accuracy: {train_accuracy:.2f}, Validation Accuracy: {val_accuracy:.2f}")
+    poly = PolynomialFeatures(degree=degree)
+    X_train_poly = poly.fit_transform(X_train)
+
+    perceptron = Perceptron(max_iter=1000, tol=1e-3)
+    perceptron.fit(X_train_poly, y_train)
+
+    xx, yy = np.meshgrid(np.linspace(X_train[:, 0].min(), X_train[:, 0].max(), 100),
+                        np.linspace(X_train[:, 1].min(), X_train[:, 1].max(), 100))
+
+    Z = perceptron.predict(poly.transform(np.c_[xx.ravel(), yy.ravel()]))
+    Z = Z.reshape(xx.shape)
+
+    plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral, alpha=0.8)
+    plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=plt.cm.Spectral)
+    plt.title(f'Perceptron Decision Boundary with Degree {degree}\nDegree {degree} - Training Accuracy: {train_accuracy:.2f}, Validation Accuracy: {val_accuracy:.2f}')
+    plt.show()
 
 # Plot the decision boundary for the model with the best validation accuracy (you can choose the best degree)
 best_degree = degrees[np.argmax([train_perceptron_with_poly_features(degree)[1] for degree in degrees])]
+
 
 poly = PolynomialFeatures(degree=best_degree)
 X_train_poly = poly.fit_transform(X_train)
