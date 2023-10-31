@@ -14,6 +14,9 @@ y_train = train_data['labels'].values
 X_val = validation_data[['x1', 'x2']].values
 y_val = validation_data['labels'].values
 
+test_data = pd.read_csv("test.csv")
+X_test = test_data[['x1', 'x2']].values
+
 # Define a function to train a perceptron model with polynomial features and return accuracy
 def train_perceptron_with_poly_features(degree):
     poly = PolynomialFeatures(degree=degree)
@@ -55,3 +58,9 @@ plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral, alpha=0.8)
 plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=plt.cm.Spectral)
 plt.title(f'Perceptron Decision Boundary with Degree {best_degree}')
 plt.show()
+X_test_poly = poly.transform(X_test)
+test_predictions = perceptron.predict(X_test_poly)
+
+# Save predictions to a CSV file
+predictions_df = pd.DataFrame({'labels': test_predictions})
+predictions_df.to_csv("preds.csv", index=False)
