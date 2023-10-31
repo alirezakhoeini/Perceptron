@@ -5,6 +5,7 @@ import numpy as np
 
 # Load the training data
 train_data = pd.read_csv("train.csv")
+test_data = pd.read_csv("test.csv")
 
 # Randomly select 50 data points as validation data
 validation_data = train_data.sample(n=50, random_state=42)
@@ -48,10 +49,13 @@ train_data['x1'] = min_max_scaling(train_data['x1'])
 train_data['x2'] = min_max_scaling(train_data['x2'])
 validation_data['x1'] = min_max_scaling(validation_data['x1'])
 validation_data['x2'] = min_max_scaling(validation_data['x2'])
+test_data['x1'] = min_max_scaling(test_data['x1'])
+test_data['x2'] = min_max_scaling(test_data['x2'])
 
 # Save the normalized data to new CSV files
 train_data.to_csv("normalized_train.csv", index=False)
 validation_data.to_csv("normalized_validation.csv", index=False)
+test_data.to_csv("normalized_test.csv", index=False)
 
 class_0 = train_data[train_data['labels'] == 0]
 class_1 = train_data[train_data['labels'] == 1]
